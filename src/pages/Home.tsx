@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Grid, Box } from '@mui/material'
+import { Grid, Box, Button } from '@mui/material'
 import useSWR from 'swr'
 import fetcher from '../helpers/fetcher'
 
@@ -17,13 +17,28 @@ const config = {
   },
 }
 
+function getMin(maxNumber: number) {
+  let min: number
+
+  while (true) {
+    const random = Math.floor(Math.random() * maxNumber)
+    if (Math.abs(random - 300) > 24) {
+      min = random
+      break
+    }
+  }
+
+  return min
+}
+
 function App() {
   const { data, error } = useSWR([URL, config], fetcher)
   const [games, setGames] = useState([])
 
   useEffect(() => {
     if (!error && data) {
-      setGames(data.splice(0, 24))
+      const min = getMin(data.length)
+      setGames(data.slice(min, data.length))
     }
   }, [data])
 
